@@ -69,13 +69,14 @@ class _HomeState extends State<Home> {
         ),
         floatingActionButton: FloatingActionButton.extended(
             onPressed: () {
-              showModalBottomSheet<void>(
-                context: context,
-                backgroundColor: Colors.grey[850],
-                builder: (BuildContext context) {
-                  return const NewClockForm();
-                },
-              );
+              // showModalBottomSheet<void>(
+              //   context: context,
+              //   backgroundColor: Colors.grey[850],
+              //   builder: (BuildContext context) {
+              //     return const NewClockForm();
+              //   },
+              // );
+              Navigator.pushNamed(context, '/new_clock_form');
             },
             backgroundColor: Colors.grey[900],
             icon: const Icon(Icons.add, color: Colors.white),

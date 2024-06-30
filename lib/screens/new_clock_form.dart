@@ -13,32 +13,61 @@ class NewClockForm extends StatefulWidget {
 class _NewClockFormState extends State<NewClockForm> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          const Text('New Clock',
-              style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white)),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
-            child: AutocompleteTimeZones(),
-          ),
-          ElevatedButton(
-            child: const Text('Close BottomSheet'),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ],
+    // return Padding(
+    //   padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
+    //   child: Column(
+    //     mainAxisAlignment: MainAxisAlignment.start,
+    //     children: <Widget>[
+    //       const Text('New Clock',
+    //           style: TextStyle(
+    //               fontSize: 26,
+    //               fontWeight: FontWeight.w600,
+    //               color: Colors.white)),
+    //       const Padding(
+    //         padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
+    //         child: AutocompleteTimeZones(),
+    //       ),
+    //       ElevatedButton(
+    //         child: const Text('Close BottomSheet'),
+    //         onPressed: () => Navigator.pop(context),
+    //       ),
+    //     ],
+    //   ),
+    // );
+    return Scaffold(
+      appBar: AppBar(
+          backgroundColor: Colors.grey[900],
+          iconTheme: const IconThemeData(color: Colors.white),
+          title:
+              const Text('New Clock', style: TextStyle(color: Colors.white))),
+      body: Container(
+        padding: const EdgeInsets.all(16.0),
+        color: Colors.grey[850],
+        child: Column(
+          children: [
+            const Text('Select Time Zone',
+                style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white)),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
+              child: AutocompleteTimeZones(),
+            ),
+            ElevatedButton(
+              child: const Text('Close BottomSheet'),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
 class AutocompleteTimeZones extends StatelessWidget {
-  const AutocompleteTimeZones({super.key});
+  AutocompleteTimeZones({super.key});
 
   static const List<String> _kOptions = <String>[
     "Africa/Abidjan",
@@ -392,6 +421,7 @@ class AutocompleteTimeZones extends StatelessWidget {
     "Pacific/Tongatapu",
     "WET"
   ];
+  final GlobalKey _formKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -409,13 +439,19 @@ class AutocompleteTimeZones extends StatelessWidget {
           FocusNode focusNode,
           VoidCallback onFieldSubmitted) {
         return TextFormField(
+          key: _formKey,
           controller: textEditingController,
           focusNode: focusNode,
           onFieldSubmitted: (String value) {
             onFieldSubmitted();
           },
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            // change border color when typing
+            focusedBorder: const OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey)),
+            border: const OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey)),
+            floatingLabelStyle: TextStyle(color: Colors.grey[400]),
             labelText: 'Location',
           ),
           style: const TextStyle(color: Colors.white),
@@ -423,19 +459,39 @@ class AutocompleteTimeZones extends StatelessWidget {
       },
       optionsViewBuilder: (BuildContext context,
           AutocompleteOnSelected<String> onSelected, Iterable<String> options) {
-        return Material(
-          elevation: 4.0,
-          child: ListView(
-            children: options
-                .map((String option) => ListTile(
-                      title: Text(option),
-                      onTap: () {
-                        onSelected(option);
-                      },
-                    ))
-                .toList(),
-          ),
-        );
+        final renderBox = _formKey.currentContext?.findRenderObject();
+        final renderObject = _formKey.currentContext?.findRenderObject();
+        if (renderObject is RenderBox) {
+          final size = renderObject.size;
+
+          return Align(
+              alignment: Alignment.topLeft,
+              child: Material(
+                elevation: 4.0,
+                child: SizedBox(
+                  width: size.width,
+                  child: ListView.separated(
+                    itemCount: options.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(
+                        title: Text(options.elementAt(index)),
+                        onTap: () {
+                          onSelected(options.elementAt(index));
+                        },
+                      );
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const Divider(
+                        indent: 15,
+                        endIndent: 15,
+                        thickness: 2,
+                      );
+                    },
+                  ),
+                ),
+              ));
+        }
+        return const SizedBox();
       },
       onSelected: (String selection) {
         debugPrint('You just selected $selection');
