@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:real_deal/screens/new_clock_form.dart';
+import 'package:world_clock/screens/new_clock_form.dart';
 import '../custom_widgets/TimeCard.dart';
 import '../services/WorldTime.dart';
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:real_deal/services/WorldTime.dart';
+import 'package:world_clock/services/WorldTime.dart';
+
+import '../services/WorldTime.dart';
 
 class Loading extends StatefulWidget {
   const Loading({super.key});
