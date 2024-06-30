@@ -12,12 +12,13 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late WorldTime time;
+  List<dynamic> time = [];
 
   @override
   Widget build(BuildContext context) {
     Map data = ModalRoute.of(context)?.settings.arguments as Map;
-    time = data['timeInstance'];
+    // time.add(data['timeInstance']);
+    time.isEmpty ? time.add(data['timeInstance']) : [];
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.grey[900],
@@ -57,10 +58,7 @@ class _HomeState extends State<Home> {
                   shrinkWrap: true,
                   padding:
                       const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-                  children: [
-                    TimeCard(time: time),
-                    const SizedBox(height: 10),
-                  ],
+                  children: time.map((e) => TimeCard(time: e)).toList(),
                 ),
               ),
               const SizedBox(height: 20),
@@ -68,7 +66,7 @@ class _HomeState extends State<Home> {
           ),
         ),
         floatingActionButton: FloatingActionButton.extended(
-            onPressed: () {
+            onPressed: () async {
               // showModalBottomSheet<void>(
               //   context: context,
               //   backgroundColor: Colors.grey[850],
@@ -76,7 +74,13 @@ class _HomeState extends State<Home> {
               //     return const NewClockForm();
               //   },
               // );
-              Navigator.pushNamed(context, '/new_clock_form');
+              Object? temp =
+                  await Navigator.pushNamed(context, '/new_clock_form');
+              if (temp != null) {
+                setState(() {
+                  time.add(temp);
+                });
+              }
             },
             backgroundColor: Colors.grey[900],
             icon: const Icon(Icons.add, color: Colors.white),

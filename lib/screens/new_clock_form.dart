@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:world_clock/services/WorldTime.dart';
 
 class NewClockForm extends StatefulWidget {
   const NewClockForm({super.key});
@@ -493,8 +494,13 @@ class AutocompleteTimeZones extends StatelessWidget {
         }
         return const SizedBox();
       },
-      onSelected: (String selection) {
-        debugPrint('You just selected $selection');
+      onSelected: (String selection) async {
+        WorldTime time = WorldTime(
+            location: selection.split('/')[1].replaceAll('_', ' '),
+            flag: '',
+            url: selection);
+        await time.getTime();
+        Navigator.pop(context, time);
       },
     );
   }
